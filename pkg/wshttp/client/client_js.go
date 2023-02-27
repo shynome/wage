@@ -36,9 +36,7 @@ func GoFetch(endpoint string) js.Func {
 			return
 		}
 		rwc := wshttp.NewWSConn(conn)
-		config := smux.DefaultConfig()
-		config.Version = 2
-		session, err = smux.Client(rwc, config)
+		session, err = smux.Client(rwc, nil)
 		if err != nil {
 			return
 		}
@@ -56,9 +54,10 @@ func GoFetch(endpoint string) js.Func {
 	}
 	go mustConnect()
 
-	var client *http.Client = &http.Client{
+	client := &http.Client{
 		Transport: &http.Transport{
-			Dial: func(network, addr string) (net.Conn, error) {
+			DisableKeepAlives: true,
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				locker.RLock()
 				defer locker.RUnlock()
 				conn, err := session.OpenStream()
