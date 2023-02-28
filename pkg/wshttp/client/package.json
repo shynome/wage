@@ -3,16 +3,18 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "build": "tinygo build -target wasm -o wshttp.wasm -no-debug -panic=trap",
-    "copy_wasm_exec.js": "cp $(tinygo env TINYGOROOT)/targets/wasm_exec.js wasm_exec.js",
-    "prepack": "npm run build && npm run copy_wasm_exec.js",
+    "prepack": "make prepack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "websocket-polyfill": "^0.0.3"
+  }
 }
