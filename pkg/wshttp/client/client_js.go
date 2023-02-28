@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"math"
 	"net"
 	"net/http"
 	"sync"
@@ -19,6 +20,14 @@ func main() {
 	var ep = js.Global().Get("WageEndpoint").String()
 	js.Global().Set("GoFetch", GoFetch(ep))
 	<-make(chan any)
+}
+
+func getJsMaxRetry() int {
+	if re := js.Global().Get("WageMaxRetry"); re.Type() == js.TypeNumber {
+		return re.Int()
+	} else {
+		return 10
+	}
 }
 
 func GoFetch(endpoint string) js.Func {
@@ -42,17 +51,20 @@ func GoFetch(endpoint string) js.Func {
 		}
 		return
 	}
-	var mustConnect = func() {
+	var retryConnect = func(max int) {
 		locker.Lock()
 		defer locker.Unlock()
-		for {
+		if max == 0 {
+			max = math.MaxInt
+		}
+		for i := 0; i < max; i++ {
 			if err := connect(); err == nil {
 				return
 			}
 			time.Sleep(time.Second)
 		}
 	}
-	go mustConnect()
+	go retryConnect(0)
 
 	client := &http.Client{
 		Transport: &http.Transport{
@@ -63,7 +75,7 @@ func GoFetch(endpoint string) js.Func {
 				conn, err := session.OpenStream()
 				if err != nil {
 					locker.RUnlock()
-					mustConnect()
+					retryConnect(getJsMaxRetry())
 					locker.RLock()
 					conn, err = session.OpenStream()
 				}
