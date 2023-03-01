@@ -306,11 +306,20 @@
 						setTimeout(this._inst.exports.go_scheduler, timeout);
 					},
 
+					// copy from https://github.com/tinygo-org/tinygo/issues/1140#issuecomment-718145455
 					// func finalizeRef(v ref)
-					"syscall/js.finalizeRef": (sp) => {
+					"syscall/js.finalizeRef": (v_addr) => {
 						// Note: TinyGo does not support finalizers so this should never be
 						// called.
-						console.error('syscall/js.finalizeRef not implemented');
+						// console.error('syscall/js.finalizeRef not implemented');
+						const id = mem().getUint32(v_addr, true);
+						this._goRefCounts[id]--;
+						if (this._goRefCounts[id] === 0) {
+							const v = this._values[id];
+							this._values[id] = null;
+							this._ids.delete(v);
+							this._idPool.push(id);
+						}
 					},
 
 					// func stringVal(value string) ref
