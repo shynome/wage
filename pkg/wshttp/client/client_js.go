@@ -18,7 +18,11 @@ import (
 
 func main() {
 	var ep = js.Global().Get("WageEndpoint").String()
-	js.Global().Set("GoFetch", GoFetch(ep))
+	var GoFetchExportName = "GoFetch"
+	if v := js.Global().Get("WageFetchExport"); v.Type() == js.TypeString {
+		GoFetchExportName = v.String()
+	}
+	js.Global().Set(GoFetchExportName, GoFetch(ep))
 	<-make(chan any)
 }
 
@@ -38,6 +42,7 @@ func GoFetch(endpoint string) js.Func {
 
 	var session *smux.Session
 	var locker = &sync.RWMutex{}
+	var maxRetry = getJsMaxRetry()
 	var connect = func() (err error) {
 		ctx := context.Background()
 		conn, _, err := websocket.Dial(ctx, endpoint, nil)
@@ -75,7 +80,7 @@ func GoFetch(endpoint string) js.Func {
 				conn, err := session.OpenStream()
 				if err != nil {
 					locker.RUnlock()
-					retryConnect(getJsMaxRetry())
+					retryConnect(maxRetry)
 					locker.RLock()
 					conn, err = session.OpenStream()
 				}
