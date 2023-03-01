@@ -3,9 +3,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
+  "browser": "wasm_exec_tinygo_browser.js",
   "types": "index.d.ts",
   "scripts": {
     "prepack": "make prepack",
