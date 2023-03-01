@@ -14,3 +14,4 @@ test: wasm cp_execjs
 	node test.js
 
 prepack: build cp_execjs
+	rm *.tgz
