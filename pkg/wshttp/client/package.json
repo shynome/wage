@@ -1,5 +1,6 @@
 {
   "name": "@shynome/wshttp",
+  "version": "0.0.6",
   "publishConfig": {
     "access": "public"
   },
@@ -8,7 +9,6 @@
     "type": "git",
     "url": "https://github.com/shynome/wage.git"
   },
-  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "browser": "wasm_exec_tinygo_browser.js",
