@@ -5,6 +5,7 @@
 // This file has been modified for use by the TinyGo compiler.
 
 (() => {
+	var require = ()=>void 0;
 	// Map multiple JavaScript environments to a single common API,
 	// preferring web standards over Node.js API.
 	//
