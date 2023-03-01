@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.6] - 2023-03-01
+
+### Fix
+
+- 将 `websocket-polyfill` 替换为 `globalThis["WebSocket"] = require("websocket").w3cwebsocket`.
+  `websocket-polyfill` 的实现不规范, 不可用
+
 ## [0.0.5] - 2023-03-01
 
 ### Improve
