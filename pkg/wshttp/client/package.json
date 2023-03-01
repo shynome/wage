@@ -3,6 +3,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "homepage": "https://github.com/shynome/wage/tree/main/pkg/wshttp/client",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shynome/wage.git"
+  },
   "version": "0.0.5",
   "description": "",
   "main": "index.js",
